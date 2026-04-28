@@ -1,0 +1,8 @@
+services:
+  zeek:
+    image: zeek/zeek
+    volumes:
+      - ./captures:/captures
+      - ./zeek_logs:/zeek_logs
+    working_dir: /zeek_logs
+    command: zeek -r /captures/capture.pcap

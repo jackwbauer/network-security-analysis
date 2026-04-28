@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Zeek Connection Logs</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+        <style>
+            * { box-sizing: border-box; }
+            body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #e0e0e0; margin: 0; }
+            h1 { color: #00ff99; margin-bottom: 20px; }
+            h2 { color: #00ff99; font-size: 14px; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 1px; }
+
+            /* Stats header */
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .stat-card {
+                background: #2a2a2a;
+                border: 1px solid #333;
+                padding: 16px;
+                border-radius: 4px;
+            }
+            .stat-card .value {
+                font-size: 28px;
+                color: #00ff99;
+                font-weight: bold;
+            }
+            .stat-card .label {
+                font-size: 12px;
+                color: #888;
+                margin-top: 4px;
+            }
+
+            /* Charts row */
+            .charts-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .chart-card {
+                background: #2a2a2a;
+                border: 1px solid #333;
+                padding: 16px;
+                border-radius: 4px;
+            }
+            .chart-card canvas { max-height: 200px; }
+
+            /* Top lists */
+            .lists-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .list-card {
+                background: #2a2a2a;
+                border: 1px solid #333;
+                padding: 16px;
+                border-radius: 4px;
+            }
+            .list-card table { width: 100%; font-size: 12px; }
+            .list-card td { padding: 4px 0; border-bottom: 1px solid #333; }
+            .list-card td:last-child { text-align: right; color: #00ff99; }
+
+            /* Filters */
+            form { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+            input, select {
+                background: #2a2a2a; color: #e0e0e0;
+                border: 1px solid #444; padding: 6px 10px;
+                border-radius: 4px;
+            }
+            button {
+                background: #00ff99; color: #000;
+                border: none; padding: 6px 14px; cursor: pointer;
+                border-radius: 4px; font-weight: bold;
+            }
+            a button { background: #333; color: #e0e0e0; }
+
+            /* Table */
+            table { width: 100%; border-collapse: collapse; font-size: 12px; }
+            th { background: #2a2a2a; color: #00ff99; padding: 8px; text-align: left; }
+            td { padding: 6px 8px; border-bottom: 1px solid #222; }
+            tr:hover { background: #2a2a2a; }
+            .state-SF  { color: #00ff99; }
+            .state-S0  { color: #ff4444; }
+            .state-REJ { color: #ff4444; }
+            .state-OTH { color: #ffaa00; }
+        </style>
+    </head>
+    <body>
+        <h1>Zeek Conection Logs</h1>
+
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="value">{{ total }} <span class="label">Total Connections</span><div>
+            </div>
+            <div class="stats-card">
+                <div class="value">{{ by_service|length }} <span class="label">Unique Services</span></div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h2>Connections by Service</h2>
+                <canvas id="serviceChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h2>Connections by State</h2>
+                <canvas id="stateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="lists_grid">
+            <div class="list-card">
+                <h2>Top Source IPs</h2>
+                <table>
+                    {% for row in top_source_ips %}
+                    <tr>
+                        <td>{{ row.source_ip }}</td>
+                        <td>{{ row.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="list-card">
+                <h2>Top Destination Ports</h2>
+                <table>
+                    {% for row in top_dest_ports %}
+                    <tr>
+                        <td>{{ row.dest_port }}</td>
+                        <td>{{ row.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <form method="get">
+            <input type="text" name="source_ip" placeholder="Source IP" value={{ filters.source_ip }}>
+            <input type="number" name="dest_port" placeholder="Destination Port" value={{ filters.dest_port }}>
+            <select name="service">
+                <option value="">All Services</option>
+                {% for s in services %}
+                    <option value={{ s }}>{% if s == filters.service %}selected{% endif %}>
+                        {{ s|default:"unknown"}}
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="conn_state">
+                <option value="">All Connection States</option>
+                {% for c in conn_state %}
+                    <option value={{ c }}{% if filters.conn_state == c %}selected{% endif %}>
+                        {{ c|default:"unknown"}}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filter</button>
+            <a href="{% url 'conn_log_list' %}"><button type="button">Reset</button></a>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>UID</th>
+                    <th>Source IP</th>
+                    <th>Src Port</th>
+                    <th>Dest IP</th>
+                    <th>Dest Port</th>
+                    <th>Proto</th>
+                    <th>Service</th>
+                    <th>State</th>
+                    <th>Duration</th>
+                    <th>Bytes Out</th>
+                    <th>Bytes In</th>
+                </tr>
+            </thead>
+            {% for log in zeek_conn_logs %}
+            <tr>
+                <td>{{ log.timestamp|date:"Y-m-d H:i:s" }}</td>
+                <td>{{ log.uid }}</td>
+                <td>{{ log.source_ip }}</td>
+                <td>{{ log.source_port }}</td>
+                <td>{{ log.dest_ip }}</td>
+                <td>{{ log.dest_port }}</td>
+                <td>{{ log.protocol }}</td>
+                <td>{{ log.service|default:"—" }}</td>
+                <td class="state-{{ log.conn_state }}">{{ log.conn_state }}</td>
+                <td>{{ log.duration|default:"—" }}</td>
+                <td>{{ log.bytes_orig|default:"—" }}</td>
+                <td>{{ log.bytes_resp|default:"—" }}</td>
+            </tr>
+            {% empty %}
+                <tr><td colspan="12">No results found.</td></tr>
+            {% endfor %}
+        </table>
+
+        <script>
+            const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+            new Chart(serviceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for row in count_by_service %}"{{ row.service|default:'unknown' }}",{% endfor %}],
+                    datasets: [{
+                        label: 'Connections',
+                        data: [{% for row in count_by_service %}{{ row.count }},{% endfor %}],
+                        backgroundColor: '#00ff99',
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                        y: { ticks: { color: '#888' }, grid: { color: '#333' } }
+                    }
+                }
+            });
+
+            const stateCtx = document.getElementById('stateChart').getContext('2d');
+            new Chart(stateCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [{% for row in count_by_conn_state %}"{{ row.conn_state }}",{% endfor %}],
+                    datasets: [{
+                        data: [{% for row in count_by_conn_state %}{{ row.count }},{% endfor %}],
+                        backgroundColor: ['#00ff99', '#ff4444', '#ffaa00', '#4488ff', '#aa44ff'],
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { labels: { color: '#e0e0e0' } }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
