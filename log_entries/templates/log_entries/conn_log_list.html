@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>Zeek Connection Logs</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
         <style>
             * { box-sizing: border-box; }
@@ -144,7 +146,7 @@
             <select name="service">
                 <option value="">All Services</option>
                 {% for s in services %}
-                    <option value={{ s }}>{% if s == filters.service %}selected{% endif %}>
+                    <option value={{ s }}>{% if s == filters.service %}selected{% endif %}
                         {{ s|default:"unknown"}}
                     </option>
                 {% endfor %}
@@ -197,6 +199,35 @@
                 <tr><td colspan="12">No results found.</td></tr>
             {% endfor %}
         </table>
+
+        <div class="card-footer d-flex justify-conent-between align-items-center">
+            <small class="text-secondary">
+                Showing {{ zeek_conn_logs.start_index }}-{{ zeek_conn_logs.end_index }} of {{ zeek_conn_logs.paginator.count }} connections
+            </small>
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if zeek_conn_logs.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in filter.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ zeek_conn_logs.previous_page_number }}">Previous</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                    {% endif %}
+
+                    <li class="page-item disabled">
+                        <span class="page-link">{{ zeek_conn_logs.number}} / {{ zeek_conn_logs.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if zeek_conn_logs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in filter.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ zeek_conn_logs.next_page_number }}">Next</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disable"><span class="page-link">Next</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
 
         <script>
             const serviceCtx = document.getElementById('serviceChart').getContext('2d');

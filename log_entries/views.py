@@ -2,6 +2,10 @@ from django.shortcuts import render
 
 from .models import ZeekConnLog
 from django.db.models import Count
+from django.core.paginator import Paginator
+from datetime import timedelta
+from django.utils import timezone
+from django.http import JsonResponse
 
 
 def conn_log_list(request):
@@ -21,6 +25,10 @@ def conn_log_list(request):
     if conn_state:
         queryset.filter(conn_state = conn_state)
 
+    paginator = Paginator(queryset, 50)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
     services = ZeekConnLog.objects.values_list('service', flat=True).distinct()
     conn_states = ZeekConnLog.objects.values_list('conn_state', flat=True).distinct()
 
@@ -32,7 +40,7 @@ def conn_log_list(request):
     count_by_conn_state = ZeekConnLog.objects.values("conn_state").annotate(count=Count("id")).order_by("-count")
 
     context = {
-        'zeek_conn_logs': queryset[:500],
+        'zeek_conn_logs': page,
         'services': services,
         'conn_states': conn_states,
         'total': total,
@@ -44,3 +52,11 @@ def conn_log_list(request):
     }
 
     return render(request, 'log_entries/conn_log_list.html', context)
+
+def conn_log_feed(request):
+    since = timezone.now() - timedelta(seconds=60)
+    logs = (
+        ZeekConnLog.objects.filter(ingested_at__gte=since)
+        .order_by('-timestamp')[:50]
+    )
+    return JsonResponse({'logs': list(logs)}, json_dumps_params={'default': str})
