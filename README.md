@@ -5,7 +5,7 @@ captures into structured logs, a watcher ingests them into Postgres, and a
 small Django app serves a dashboard for browsing and filtering connections
 (including a live-updating feed).
 
-## How it fits together
+## Architecture
 
 ```
 tcpdump  ->  captures/*.pcap  ->  Zeek (docker)  ->  zeek_logs/*.log
