@@ -143,18 +143,18 @@
         <form method="get">
             <input type="text" name="source_ip" placeholder="Source IP" value={{ filters.source_ip }}>
             <input type="number" name="dest_port" placeholder="Destination Port" value={{ filters.dest_port }}>
-            <select name="service">
+            <select name="service" value={{ selected_filters.service }}>
                 <option value="">All Services</option>
                 {% for s in services %}
-                    <option value={{ s }}>{% if s == filters.service %}selected{% endif %}
+                    <option value={{ s }} {% if filters.service == s %}selected{% endif %}>
                         {{ s|default:"unknown"}}
                     </option>
                 {% endfor %}
             </select>
             <select name="conn_state">
                 <option value="">All Connection States</option>
-                {% for c in conn_state %}
-                    <option value={{ c }}{% if filters.conn_state == c %}selected{% endif %}>
+                {% for c in conn_states %}
+                    <option value={{ c }} {% if filters.conn_state == c %}selected{% endif %}>
                         {{ c|default:"unknown"}}
                     </option>
                 {% endfor %}

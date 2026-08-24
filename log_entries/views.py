@@ -11,26 +11,29 @@ from django.http import JsonResponse
 def conn_log_list(request):
     queryset = ZeekConnLog.objects.all().order_by('-timestamp')
 
-    source_ip = request.GET.get('source_id')
+    source_ip = request.GET.get('source_ip')
     dest_port = request.GET.get('dest_port')
     service = request.GET.get('service')
     conn_state = request.GET.get('conn_state')
 
     if source_ip:
-        queryset.filter(source_ip = source_ip)
+        queryset = queryset.filter(source_ip__icontains = source_ip)
     if dest_port:
-        queryset.filter(dest_port = dest_port)
+        queryset = queryset.filter(dest_port = dest_port)
+    print('before:', queryset.query)
     if service:
-        queryset.filter(service = service)
+        print("setting service filter")
+        queryset = queryset.filter(service = service)
+    print('after:', queryset.query)
     if conn_state:
-        queryset.filter(conn_state = conn_state)
+        queryset = queryset.filter(conn_state = conn_state)
 
     paginator = Paginator(queryset, 50)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
-    services = ZeekConnLog.objects.values_list('service', flat=True).distinct()
-    conn_states = ZeekConnLog.objects.values_list('conn_state', flat=True).distinct()
+    services = set(ZeekConnLog.objects.values_list('service', flat=True).distinct())
+    conn_states = set(ZeekConnLog.objects.values_list('conn_state', flat=True).distinct())
 
     total = ZeekConnLog.objects.count()
 
@@ -48,15 +51,70 @@ def conn_log_list(request):
         "top_dest_ports": top_dest_ports,
         "count_by_service": count_by_service,
         "count_by_conn_state": count_by_conn_state,
-        'filters': request.GET
+        'filters': request.GET,
     }
 
     return render(request, 'log_entries/conn_log_list.html', context)
 
+def conn_log_list_live(request):
+    queryset = ZeekConnLog.objects.all()
+
+    source_ip = request.GET.get('source_ip')
+    dest_port = request.GET.get('dest_port')
+    service = request.GET.get('service')
+    conn_state = request.GET.get('conn_state')
+
+    if source_ip:
+        queryset = queryset.filter(source_ip__icontains = source_ip)
+    if dest_port:
+        queryset = queryset.filter(dest_port = dest_port)
+    if service:
+        queryset = queryset.filter(service = service)
+    if conn_state:
+        queryset = queryset.filter(conn_state = conn_state)
+
+    paginator = Paginator(queryset, 50)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    services = set(ZeekConnLog.objects.values_list('service', flat=True).distinct())
+    print(services)
+    conn_states = set(ZeekConnLog.objects.values_list('conn_state', flat=True).distinct())
+    context = {
+        'services': services,
+        'conn_states': conn_states,
+        'filters': request.GET
+    }
+    return render(request, 'log_entries/conn_log_list_live.html', context)
+
 def conn_log_feed(request):
+    queryset = ZeekConnLog.objects.all().order_by('-timestamp')
+
+    source_ip = request.GET.get('source_ip')
+    dest_port = request.GET.get('dest_port')
+    service = request.GET.get('service')
+    conn_state = request.GET.get('conn_state')
+
+    if source_ip:
+        queryset = queryset.filter(source_ip__icontains = source_ip)
+    if dest_port:
+        queryset = queryset.filter(dest_port = dest_port)
+    if service:
+        queryset = queryset.filter(service = service)
+    if conn_state:
+        queryset = queryset.filter(conn_state = conn_state)
+
     since = timezone.now() - timedelta(seconds=60)
     logs = (
-        ZeekConnLog.objects.filter(ingested_at__gte=since)
-        .order_by('-timestamp')[:50]
+        # queryset.filter(ingested_at__gte=since)[:50]
+        ZeekConnLog.objects
+        .filter(ingested_at__gte=since)
+        # .order_by('-timestamp')[:50]
+        .values(
+            'timestamp', 'uid', 'source_ip', 'source_port',
+            'dest_ip', 'dest_port', 'protocol', 'service',
+            'conn_state', 'duration', 'bytes_orig', 'bytes_resp'
+        )
+
     )
-    return JsonResponse({'logs': list(logs)}, json_dumps_params={'default': str})
+    return JsonResponse({'zeek_conn_logs': list(logs)}, json_dumps_params={'default': str})

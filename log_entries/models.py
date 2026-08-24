@@ -28,7 +28,7 @@ class ZeekConnLog(models.Model):
     source_port     = models.PositiveIntegerField()
     dest_ip         = models.GenericIPAddressField(db_index=True)
     dest_port       = models.PositiveIntegerField()
-    protocol        = models.CharField(max_length=10)
+    protocol        = models.CharField(max_length=20)
     service         = models.CharField(max_length=50, null=True, blank=True)
 
     # Traffic stats
@@ -42,7 +42,7 @@ class ZeekConnLog(models.Model):
     resp_ip_bytes   = models.BigIntegerField(null=True, blank=True)
 
     # Connection details
-    conn_state      = models.CharField(max_length=10, null=True, blank=True)
+    conn_state      = models.CharField(max_length=20, null=True, blank=True)
     history         = models.CharField(max_length=50, null=True, blank=True)
     local_orig      = models.BooleanField(null=True, blank=True)
     local_resp      = models.BooleanField(null=True, blank=True)
