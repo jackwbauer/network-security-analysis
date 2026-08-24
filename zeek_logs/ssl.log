@@ -1,0 +1,24 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	ssl
+#open	2025-01-01-05-00-00
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	version	cipher	curve	server_name	resumed	last_alert	next_protocol	established	ssl_history	cert_chain_fps	client_cert_chain_fps	sni_matches_cert
+#types	time	string	addr	port	addr	port	string	string	string	string	bool	string	string	bool	string	vector[string]	vector[string]	bool
+1735707649.634610	C18eWqMyeuPH7M3EHM	192.168.1.11	58020	198.51.100.16	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	safebrowsing.example.com	F	-	h2	T	CsiI	-	-	T
+1735707653.322280	CksbudwApzQlkLxQEK	192.168.1.10	49964	198.51.100.15	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	safebrowsing.example.com	F	-	h2	T	CsiI	-	-	T
+1735707654.375490	Ce69s7QCs90gxwsRbZ	192.168.1.11	44726	198.51.100.16	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	mail.example.com	F	-	h2	T	CsiI	-	-	T
+1735707675.118751	CUnWeNGmWv7OjgpkjV	192.168.1.10	29644	203.0.113.17	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	safebrowsing.example.com	F	-	h2	T	CsiI	-	-	T
+1735707690.336391	CivuNZQ8DliS6cmX2t	192.168.1.10	24426	198.51.100.13	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	auth.example.org	F	-	h2	T	CsiI	-	-	T
+1735707694.293425	Cuhw3U3x8EE5GXTeLY	192.168.1.11	17625	192.0.2.14	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	streaming.example.net	F	-	h2	T	CsiI	-	-	T
+1735707760.306621	CcCkJYybQknlr2cMps	192.168.1.10	2452	203.0.113.16	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	updates.example.org	F	-	h2	T	CsiI	-	-	T
+1735707777.931135	CtyEOfHl2wBqCoqdUP	192.168.1.11	14109	203.0.113.10	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	streaming.example.net	F	-	h2	T	CsiI	-	-	T
+1735707785.822030	CLcriLRc3uoU53bYsr	192.168.1.10	37900	198.51.100.11	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	push.example.net	F	-	h2	T	CsiI	-	-	T
+1735707809.451289	CdUm11BnNRwKTmSlB8	192.168.1.11	46436	198.51.100.14	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	static.example.com	F	-	h2	T	CsiI	-	-	T
+1735707812.404853	CiKpuSjjud5MPEJwWt	192.168.1.10	25744	198.51.100.15	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	static.example.com	F	-	h2	T	CsiI	-	-	T
+1735707839.070820	CSL6YNBmOXrcLFokco	192.168.1.10	40937	192.0.2.17	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	static.example.com	F	-	h2	T	CsiI	-	-	T
+1735707843.102190	CKuLqIoDMwEnRx0rli	192.168.1.11	65020	192.0.2.16	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	api.example.net	F	-	h2	T	CsiI	-	-	T
+1735707849.474621	C8HqB8RkLNNIGNtvHX	192.168.1.10	2896	192.0.2.15	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	streaming.example.net	F	-	h2	T	CsiI	-	-	T
+1735707851.152826	C6DaAsoaxzIykTyxqA	192.168.1.10	20918	203.0.113.10	443	TLSv13	TLS_AES_128_GCM_SHA256	x25519	www.example.com	F	-	h2	T	CsiI	-	-	T
+#close	2025-01-01-05-00-00

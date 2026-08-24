@@ -1,0 +1,27 @@
+#separator \x09
+#set_separator	,
+#empty_field	(empty)
+#unset_field	-
+#path	quic
+#open	2025-01-01-05-00-00
+#fields	ts	uid	id.orig_h	id.orig_p	id.resp_h	id.resp_p	version	client_initial_dcid	client_scid	server_scid	server_name	client_protocol	history
+#types	time	string	addr	port	addr	port	string	string	string	string	string	string	string
+1735707616.940201	Cx9qWCA79ISjs8JHUd	192.168.1.10	11923	198.51.100.17	443	1	e808d11d6f9901a9	(empty)	54a542a7ee099188	updates.example.org	h3	hooZIoOHhHIo
+1735707629.662403	CWnXRCI4hiCGItUBY3	192.168.1.10	48101	198.51.100.17	443	1	72d7cd4c737b35e1	(empty)	26236570d6cf0e97	updates.example.org	h3	SZhoiOohiSiZOoO
+1735707640.613070	CzpPwIv9IvCtoStU6Q	192.168.1.10	46283	192.0.2.14	443	1	7bf841332084f8b2	(empty)	d7d97720f7d61a02	push.example.net	h3	hISHZHHOZhSHZHIhIOH
+1735707688.811846	CfjBFZf4Y25zyxxfnt	192.168.1.11	4443	198.51.100.13	443	1	ac24db2b7014d8b8	(empty)	14406c71e9083269	push.example.net	h3	HIOiZhioiIoIZ
+1735707703.486747	CLft9SGVZe8NBQv2WN	192.168.1.10	52821	203.0.113.10	443	1	6e01225b5fed4a82	(empty)	4882f2ab9d9d00a9	static.example.com	h3	IHHIhiHSSoZiOIZiZIoS
+1735707707.439439	ChBid61z73Y5Slj9C2	192.168.1.11	64946	203.0.113.14	443	1	f8f3507ea78d6ebc	(empty)	5693818c4fa1f6c5	docs.example.com	h3	OIiiIISiiHiSHIh
+1735707714.681183	CRQEDI5SrJH3yvVjc7	192.168.1.11	41005	203.0.113.16	443	1	ab3d4841b30e3315	(empty)	7a2ff2ae7ac440ca	telemetry.example.org	h3	iOhhIoIhhZihh
+1735707721.705650	CaxBquKJqwoPCjQ53V	192.168.1.11	6708	192.0.2.15	443	1	e49322b96878a33c	(empty)	d17b190889258139	safebrowsing.example.com	h3	hiIIZHHOSIS
+1735707732.211701	CQOfMXSfjSNTtgatwq	192.168.1.11	52374	198.51.100.17	443	1	6881189cd06cb8f3	(empty)	8a2442244c5fb797	static.example.com	h3	ShSHoSZoohIS
+1735707742.619990	CAanrRXJXHwmhPE7ty	192.168.1.10	13239	198.51.100.14	443	1	5d9db4912142b862	(empty)	62abaf872570502d	docs.example.com	h3	iiOZoiIIOSSiIiOOiI
+1735707746.034478	CFr6w6uaVTTCPwdHnA	192.168.1.11	42168	198.51.100.14	443	1	5482dcec0ad0e27f	(empty)	6fee4de151aa0abc	cdn.example.net	h3	HOIiISOIOohZIIZO
+1735707751.729541	CbeqcdWFMFzRfHMrtF	192.168.1.11	9673	192.0.2.12	443	1	86ada1bbd016794b	(empty)	b1bb2f8cb22c4ec0	static.example.com	h3	SIOHIiZiHZSIHOSi
+1735707797.743696	CENkNaqVkVEVfMNz7x	192.168.1.10	23481	192.0.2.12	443	1	bfec800b3e418410	(empty)	f7886a2f7c2ec03f	api.example.net	h3	OHIZHIoSiIhHH
+1735707797.871676	CRNsPPqLiZgShhgmmq	192.168.1.10	28337	198.51.100.14	443	1	5628eb7301197fc1	(empty)	bea7f40ddd5a61de	api.example.net	h3	oHIZZHoIoI
+1735707799.504747	CiT80g4DJBLWL12T3D	192.168.1.11	18838	192.0.2.16	443	1	71a0d8bb3fd8b96b	(empty)	7aa2de90e8772c55	auth.example.org	h3	ISHZSioioiIiHI
+1735707829.741636	Cwcm4wDCc8uRGZZqHk	192.168.1.10	49253	198.51.100.13	443	1	9e14f36d5ce0e738	(empty)	4229da651a79a632	streaming.example.net	h3	IHIHISIhHHIOHSIihoI
+1735707839.463849	C4ITIKvYo7CzakFIFv	192.168.1.11	52120	198.51.100.13	443	1	fed9bf9ccf779011	(empty)	afa35f80d31ad1e7	updates.example.org	h3	IHIOhIOSSSSooZo
+1735707856.102707	CqyHl3pxa8Sx8p9mTf	192.168.1.11	25363	192.0.2.16	443	1	7a45a0e84a3ed31a	(empty)	5241c00c7951219e	api.example.net	h3	IZIiIiSHHZhOIZOSIOHi
+#close	2025-01-01-05-00-00
